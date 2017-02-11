@@ -46,13 +46,14 @@ namespace UnityStandardAssets.Utility
 			// Convert the angle into a rotation
 			var currentRotation = Quaternion.Euler(0, currentRotationAngle, 0);
 
-			// Set the position of the camera on the x-z plane to:
-			// distance meters behind the target
+            // Set the position of the camera on the x-z plane to:
+            // distance meters behind the target
+            Debug.Log(target.position);
 			transform.position = target.position;
 			transform.position -= currentRotation * Vector3.forward * distance;
 
 			// Set the height of the camera
-			transform.position = new Vector3(transform.position.x ,currentHeight , transform.position.z);
+			transform.position = new Vector3(transform.position.x , wantedHeight, transform.position.z);
 
 			// Always look at the target
 			transform.LookAt(target);
