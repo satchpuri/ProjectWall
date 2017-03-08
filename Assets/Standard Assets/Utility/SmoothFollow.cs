@@ -48,7 +48,6 @@ namespace UnityStandardAssets.Utility
 
             // Set the position of the camera on the x-z plane to:
             // distance meters behind the target
-            Debug.Log(target.position);
 			transform.position = target.position;
 			transform.position -= currentRotation * Vector3.forward * distance;
 
