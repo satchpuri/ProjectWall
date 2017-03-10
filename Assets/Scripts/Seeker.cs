@@ -73,9 +73,18 @@ public class Seeker : Vehicle {
                 wall = Vector3.zero;
             }
         }
-		steeringForce += allignWeight * Allignment();
-		steeringForce += cohesionWeight * Cohesion();
-        steeringForce += seperationWeight * Separation(5);
+        if (gm.Allign)
+        {
+            steeringForce += allignWeight * Allignment();
+        }
+        if (gm.Cohesion)
+        {
+            steeringForce += cohesionWeight * Cohesion();
+        }
+        if (gm.Seperation)
+        {
+            steeringForce += seperationWeight * Separation(5);
+        }
         steeringForce += boundsWeight * StayWithinRadius(new Vector3(0,50, 0), 200);
 		for (int i =0; i < gm.GetComponent<GameManager>().Obstacles.Count; i++) { 
 			steeringForce += avoidanceWeight * AvoidObstacle (gm.GetComponent<GameManager>().Obstacles[i], safeDistance);

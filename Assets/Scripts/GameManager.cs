@@ -1,5 +1,6 @@
 ﻿
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 //add using System.Collections.Generic; to use the generic list format
@@ -31,6 +32,14 @@ public class GameManager : MonoBehaviour {
         get { return obstacles; }
     }
 
+    public Text allignTxt;
+    public Text cohesionTxt;
+    public Text seperationTxt;
+
+    public bool Cohesion = true;
+    public bool Allign = true;
+    public bool Seperation = true;
+
     void Start () {      
         flocks = new List<Flock>();     
         for (int i = 0; i < numberOfFlockers; i++)
@@ -47,12 +56,26 @@ public class GameManager : MonoBehaviour {
         {
             obstacles.Add(obstacle);
         }
+        allignTxt.text = Allign.ToString();
+        cohesionTxt.text = Cohesion.ToString();
+        seperationTxt.text = Seperation.ToString();
     }
 
 	void Update () {
-        for (int i = 0; i < flockers.Count; i++)
+        if (Input.GetKeyDown(KeyCode.B))
         {
-           
+            Allign = !Allign;
+            allignTxt.text = Allign.ToString();
         }
-	}
+        if (Input.GetKeyDown(KeyCode.N))
+        {
+            Cohesion = !Cohesion;
+            cohesionTxt.text = Cohesion.ToString();
+        }
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            Seperation = !Seperation;
+            seperationTxt.text = Seperation.ToString();
+        }
+    }
 }
