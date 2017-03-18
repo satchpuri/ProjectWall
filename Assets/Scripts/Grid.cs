@@ -25,7 +25,7 @@ public class Grid : MonoBehaviour
     #endregion
 
     #region Inbuilt Methods
-    void Start()
+    void Awake()
     {
         //to find # of nodes in the grid
         nodeDiameter = nodeRadius * 2;
