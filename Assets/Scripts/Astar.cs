@@ -107,7 +107,7 @@ public class Astar : MonoBehaviour
         {
             return (14 * distZ + 10 * (distX - distZ) + 10*distY);
         }
-        return (14 * distX + 10 * (distX - distZ) + 10 * distY);
+        return (14 * distX + 10 * (distZ - distX) + 10 * distY);
     }
 
     //to draw the path

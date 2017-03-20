@@ -46,10 +46,13 @@ public class Grid : MonoBehaviour
         {
             Node playerNode = NodePoint(player.position);
 
+            Color invisible = Color.white;
+            invisible.a = 0f;
+
             foreach (Node n in grid)
             {
                 //if walkable then white, if not then red
-                Gizmos.color = (n.walkable) ? Color.white : Color.cyan;
+                Gizmos.color = (n.walkable) ? invisible : Color.cyan;
                 //path color
                 if (path != null)
                 {
@@ -117,7 +120,7 @@ public class Grid : MonoBehaviour
                         continue;
                     }
 
-                    int checkX = node.gridX + y;
+                    int checkX = node.gridX + x;
                     int checkY = node.gridY + y;
                     int checkZ = node.gridZ + z;
                     //add neibhors
