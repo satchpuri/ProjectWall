@@ -92,8 +92,11 @@ public class Grid : MonoBehaviour
                 {
                     //increment by diameter until other end is met
                     Vector3 worldPoint = worldBotLeft + Vector3.right * (x * nodeDiameter + nodeRadius) + Vector3.forward * (y * nodeDiameter + nodeRadius) + Vector3.up * (z * nodeDiameter + nodeRadius);
-                    //check for collision
+                    //check for collision with rock
                     bool walkable = !(Physics.CheckSphere(worldPoint, nodeRadius, unwalkableMask));
+                    //check for collision with terrain
+                    float terrainHeight = Terrain.activeTerrain.SampleHeight(worldPoint);
+                    if (worldPoint.y < terrainHeight) walkable = false;
                     //add to the grid
                     grid[x, y, z] = new Node(walkable, worldPoint, x, y, z);
                 }

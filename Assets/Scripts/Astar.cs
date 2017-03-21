@@ -110,17 +110,38 @@ public class Astar : MonoBehaviour
         return (14 * distX + 10 * (distZ - distX) + 10 * distY);
     }
 
-    //to draw the path
-    void DrawPath(Node startNode, Node endNode)
+    void followPath(Node start, Node end)
+    {
+        GameObject seeker = GameObject.FindGameObjectWithTag("astar_agent");
+        List<Node> path = makePath(start, end);
+        if (path.Count < 1) return;
+
+        Node current = path[path.Count-1];
+        float terrainHeight = Terrain.activeTerrain.SampleHeight(current.worldPos);
+        Vector3 adjustedTarget = new Vector3(current.worldPos.x, terrainHeight + 2f, current.worldPos.z);
+
+        seeker.transform.position = Vector3.MoveTowards(seeker.transform.position, adjustedTarget, 10f * Time.deltaTime);
+    }
+
+    List<Node> makePath(Node start, Node end)
     {
         List<Node> path = new List<Node>();
-        Node currentNode = endNode;
+        Node currentNode = end;
         //get path in reverse
-        while (currentNode != startNode)
+        while (currentNode != start)
         {
             path.Add(currentNode);
             currentNode = currentNode.parent;
         }
+
+        return path;
+    }
+
+    //to draw the path
+    void DrawPath(Node startNode, Node endNode)
+    {
+        followPath(startNode, endNode);
+        List<Node> path = makePath(startNode, endNode);
 
         //2 -ves make a +ve
         path.Reverse();
