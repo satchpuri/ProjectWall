@@ -78,6 +78,7 @@ public class InfluenceMap : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
+        MakeInfluenceGrid();
         if (Input.GetKeyUp(KeyCode.I))
         {
             Debug.Log("Recalculating influence map");
@@ -114,23 +115,35 @@ public class InfluenceMap : MonoBehaviour {
                 //Calculate white influence (Strength: 1)
                 foreach (GameObject white in whites)
                     if (Vector3.Distance(nodePos, white.transform.position) < influenceDistance)
-                        grid[x, z].white += 1;
+                    {
+                        float falloff = (influenceDistance - Vector3.Distance(nodePos, white.transform.position)) / influenceDistance;
+                        grid[x, z].white += 1 * falloff;
+                    }
 
                 //Calculate blue influence (Strength: 2)
                 foreach (GameObject blue in blues)
                     if (Vector3.Distance(nodePos, blue.transform.position) < influenceDistance)
-                        grid[x, z].blue += 2;
+                    {
+                        float falloff = (influenceDistance - Vector3.Distance(nodePos, blue.transform.position)) / influenceDistance;
+                        grid[x, z].blue += 2* falloff;
+                    }
 
                 //Calculate yellow influence (Strength: 3)
                 foreach (GameObject yellow in yellows)
                     if (Vector3.Distance(nodePos, yellow.transform.position) < influenceDistance)
-                        grid[x, z].yellow += 3;
+                    {
+                        float falloff = (influenceDistance - Vector3.Distance(nodePos, yellow.transform.position)) / influenceDistance;
+                        grid[x, z].yellow += 3 * falloff;
+                    }
 
                 //Calculate black influence (Strength: 4)
                 foreach (GameObject black in blacks)
                     if (Vector3.Distance(nodePos, black.transform.position) < influenceDistance)
-                        grid[x, z].black += 4;
-                
+                    {
+                        float falloff = (influenceDistance - Vector3.Distance(nodePos, black.transform.position)) / influenceDistance;
+                        grid[x, z].black += 4 * falloff;
+                    }
+
                 grid[x, z].GetStrongest();
 
             }
