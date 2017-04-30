@@ -22,6 +22,9 @@ public class Grid : MonoBehaviour
     //player pos
     public Transform player;
     public List<Node> path;
+
+    //Toggles visibility of the grid
+    public bool gridIsVisible = false;
     #endregion
 
     #region Inbuilt Methods
@@ -38,6 +41,8 @@ public class Grid : MonoBehaviour
     //to draw the gizmo
     void OnDrawGizmos()
     {
+        if (!gridIsVisible) return;
+
         // z and y are swapped because z represents up in 3d space
         Gizmos.DrawWireCube(transform.position, new Vector3(gridSize.x, gridSize.z, gridSize.y));
 
