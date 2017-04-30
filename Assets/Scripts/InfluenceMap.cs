@@ -71,7 +71,6 @@ public class InfluenceMap : MonoBehaviour {
 
     // Update is called once per frame
     void Update () {
-        MakeInfluenceGrid();
         if (Input.GetKeyUp(KeyCode.I))
         {
             Debug.Log("Recalculating influence map");
