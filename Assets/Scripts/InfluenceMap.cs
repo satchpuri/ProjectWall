@@ -49,6 +49,7 @@ public class InfluenceMap : MonoBehaviour {
     int gridSizeZ;
 
     public bool gridIsVisible = true;
+    public bool continuousUpdates = false;
 
     //All units that can effect the influence map
     Influencer[] influencers;
@@ -66,18 +67,27 @@ public class InfluenceMap : MonoBehaviour {
         nodeDiameter = nodeRadius * 2;
         gridSizeX = Mathf.RoundToInt(gridSize.x / nodeDiameter);
         gridSizeZ = Mathf.RoundToInt(gridSize.y / nodeDiameter);
-        MakeInfluenceGrid();
     }
 
     // Update is called once per frame
     void Update () {
+        
+        // Updates the map once
         if (Input.GetKeyUp(KeyCode.I))
-        {
-            Debug.Log("Recalculating influence map");
             MakeInfluenceGrid();
-            Debug.Log("Finished");
-        }
-	}
+
+        // Toggles continuous map updates
+        if (Input.GetKeyUp(KeyCode.O))
+            continuousUpdates = !continuousUpdates;
+
+        //Toggles grid visibility
+        if (Input.GetKeyUp(KeyCode.P))
+            gridIsVisible = !gridIsVisible;
+
+        // If continuously updating... do that.
+        if (continuousUpdates)
+            MakeInfluenceGrid();
+    }
 
     //Makes an influence map with no calculated influences
     void MakeInfluenceGrid()
