@@ -4,34 +4,27 @@ using UnityEngine;
 
 public struct InfluenceNode
 {
-    public float black, blue, white, yellow;
+    public float red,green;
     public Vector3 worldPos;
-    public Color winner;
+    public Team winner;
 
-    public InfluenceNode(int black, int yellow, int blue, int white, Vector3 pos)
+    public InfluenceNode(float red, float green, Vector3 worldPos)
     {
-        this.black = black;
-        this.yellow = yellow;
-        this.white = white;
-        this.blue = blue;
-
-        this.worldPos = pos;
-
-        this.winner = Color.gray;
+        this.red = red;
+        this.green = green;
+        this.worldPos = worldPos;
+        this.winner = Team.None;
     }
-    public Color GetStrongest()
+    
+    public Team GetStrongest()
     {
-        float total = black + yellow + white + blue;
+        float total = red + green;
 
-        float percentBlack = black / total;
-        float percentYellow = yellow / total;
-        float percentWhite = white / total;
-        float percentBlue = blue / total;
+        float percentRed = red / total;
+        float percentGreen = green / total;
 
-        winner = (percentBlack > 0.5f) ? Color.black : winner;
-        winner = (percentYellow > 0.5f) ? Color.yellow : winner;
-        winner = (percentWhite > 0.5f) ? Color.white : winner;
-        winner = (percentBlue > 0.5f) ? Color.blue : winner;
+        winner = (percentRed > 0.5f) ? Team.Red : winner;
+        winner = (percentGreen > 0.5f) ? Team.Green : winner;
 
         return winner;
         
@@ -58,7 +51,7 @@ public class InfluenceMap : MonoBehaviour {
     public bool gridIsVisible = true;
 
     //All units that can effect the influence map
-    GameObject[] blacks, blues, whites, yellows;
+    Influencer[] influencers;
 
     #endregion
 
@@ -91,10 +84,7 @@ public class InfluenceMap : MonoBehaviour {
     void MakeInfluenceGrid()
     {
         //Get all current units on the field
-        blacks = GameObject.FindGameObjectsWithTag("blackTeam");
-        blues = GameObject.FindGameObjectsWithTag("blueTeam");
-        whites = GameObject.FindGameObjectsWithTag("whiteTeam");
-        yellows = GameObject.FindGameObjectsWithTag("yellowTeam");
+        influencers = Object.FindObjectsOfType<Influencer>();
 
         grid = new InfluenceNode[gridSizeX, gridSizeZ];
 
@@ -110,39 +100,18 @@ public class InfluenceMap : MonoBehaviour {
                 Vector3 nodePos = worldBotLeft
                     + Vector3.right * (x * nodeDiameter + nodeRadius)
                     + Vector3.forward * (z * nodeDiameter + nodeRadius);
-                grid[x, z] = new InfluenceNode(0, 0, 0, 0, nodePos);
+                grid[x, z] = new InfluenceNode(0, 0, nodePos);
 
                 //Calculate white influence (Strength: 1)
-                foreach (GameObject white in whites)
-                    if (Vector3.Distance(nodePos, white.transform.position) < influenceDistance)
+                foreach (Influencer infer in influencers)
+                {
+                    if (Vector3.Distance(nodePos, infer.transform.position) < influenceDistance)
                     {
-                        float falloff = (influenceDistance - Vector3.Distance(nodePos, white.transform.position)) / influenceDistance;
-                        grid[x, z].white += 1 * falloff;
+                        float falloff = (influenceDistance - Vector3.Distance(nodePos, infer.transform.position)) / influenceDistance;
+                        if(infer.team == Team.Red) grid[x, z].red += infer.strength * falloff;
+                        if(infer.team == Team.Green) grid[x, z].green += infer.strength * falloff;
                     }
-
-                //Calculate blue influence (Strength: 2)
-                foreach (GameObject blue in blues)
-                    if (Vector3.Distance(nodePos, blue.transform.position) < influenceDistance)
-                    {
-                        float falloff = (influenceDistance - Vector3.Distance(nodePos, blue.transform.position)) / influenceDistance;
-                        grid[x, z].blue += 2* falloff;
-                    }
-
-                //Calculate yellow influence (Strength: 3)
-                foreach (GameObject yellow in yellows)
-                    if (Vector3.Distance(nodePos, yellow.transform.position) < influenceDistance)
-                    {
-                        float falloff = (influenceDistance - Vector3.Distance(nodePos, yellow.transform.position)) / influenceDistance;
-                        grid[x, z].yellow += 3 * falloff;
-                    }
-
-                //Calculate black influence (Strength: 4)
-                foreach (GameObject black in blacks)
-                    if (Vector3.Distance(nodePos, black.transform.position) < influenceDistance)
-                    {
-                        float falloff = (influenceDistance - Vector3.Distance(nodePos, black.transform.position)) / influenceDistance;
-                        grid[x, z].black += 4 * falloff;
-                    }
+                }
 
                 grid[x, z].GetStrongest();
 
@@ -184,10 +153,12 @@ public class InfluenceMap : MonoBehaviour {
         {
             foreach (InfluenceNode n in grid)
             {
-                //if walkable then white, if not then red
-                Color translucent = n.winner;
-                translucent.a = 0.8f;
-                Gizmos.color = translucent;
+                Color nodeColor = Color.gray;
+                if (n.winner == Team.Red) nodeColor = Color.red;
+                if (n.winner == Team.Green) nodeColor = Color.green;
+
+                nodeColor.a = 0.8f;
+                Gizmos.color = nodeColor;
 
                 //draw cube to represent grid with a buffer 5
                 Gizmos.DrawCube(n.worldPos, Vector3.one * (nodeDiameter - 3f));
