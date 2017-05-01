@@ -5,7 +5,7 @@ using UnityEngine;
 public class Zoom : MonoBehaviour {
 
     private float ZoomAmount = 0; //With Positive and negative values
-private float MaxToClamp =50;
+private float MaxToClamp =100;
 private float ROTSpeed = 10;
 
 void Update(){
